@@ -18,13 +18,10 @@ module.exports = [
   require('../services/registry'),
   require('../services/corporate'),
   require('../services/email'),
+  require('../services/downloads'),
   {
     register: require('../services/npme'),
     options: config
-  },
-  {
-    register: require('../services/downloads'),
-    options: config.downloads
   },
   {
     register: require('./bonbon'),

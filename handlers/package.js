@@ -8,7 +8,7 @@ package.show = function(request, reply) {
   var context = {title: name};
   var loggedInUser = request.auth.credentials;
   var Package = require("../models/package").new(request)
-  var Download = require("../models/download").new(request)
+
   var name = request.params.package ||
     request.params.scope + "/" + request.params.project;
 
@@ -60,7 +60,7 @@ package.show = function(request, reply) {
         return promise.cancel();
       }
 
-      return Download.getAll(package.name)
+      return request.server.methods.downloads.getAll(package.name)
     })
     .then(function(downloads) {
       package.downloads = downloads

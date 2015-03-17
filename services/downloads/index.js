@@ -1,39 +1,24 @@
-var Hapi = require('hapi'),
-    request = require('request'),
-    SECOND = 1000;
-
-var timer = {};
+var SECOND = 1000;
 
 exports.register = function Downloads (server, options, next) {
 
-  server.method('downloads.getDownloadsForPackage', require('./methods/getDownloads')(options.url), {
-    cache: {
+  var opts = {};
+  if (process.env.USE_CACHE) {
+    opts.cache = {
       staleTimeout: 1 * SECOND, // don't wait more than a second for fresh data
       staleIn: 60 * 60 * SECOND, // refresh after an hour
       segment: '##packagedownloads'
     }
-  });
+  };
 
-  server.method('downloads.getAllDownloadsForPackage', require('./methods/getAllDownloads')(options.url), {
-    cache: {
-      staleTimeout: 1 * SECOND, // don't wait more than a second for fresh data
-      staleIn: 60 * 60 * SECOND, // refresh after an hour
-      segment: '##packagedownloadsall'
-    }
-  });
-
-  server.method('downloads.getAllDownloads', require('./methods/getAllDownloads')(options.url), {
-    cache: {
-      staleTimeout: 1 * SECOND, // don't wait more than a second for fresh data
-      staleIn: 60 * 60 * SECOND, // refresh after an hour
-      segment: '##alldownloads'
-    }
-  });
+  server.method('downloads.getAll', function(packageName) {
+    return require('../../models/download').new().getAll(packageName);
+  }, opts);
 
   return next();
 };
 
 exports.register.attributes = {
-  "name": "newww-service-downloads",
-  "version": "0.0.1",
+  "name": "downloads",
+  "version": "1.0.0",
 };

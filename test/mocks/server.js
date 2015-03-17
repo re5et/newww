@@ -1,5 +1,6 @@
 var Hapi = require('hapi'),
-    config = require('../../config');
+    config = require('../../config'),
+    _ = require('lodash');
 
 module.exports = function (done) {
   process.env.NODE_ENV = 'dev';
@@ -9,7 +10,6 @@ module.exports = function (done) {
   var server = new Hapi.Server();
   server.connection();
   server.views(config.views);
-  server.methods = require('./server-methods')(server);
 
   server.register(require('hapi-auth-cookie'), function (err) {
     if (err) { throw err; }
@@ -28,10 +28,11 @@ module.exports = function (done) {
         register: require('crumb'),
         options: { cookieOptions: { isSecure: true } }
       },
-      require('../../adapters/bonbon')
+      require('../../adapters/bonbon'),
+      require('../../services/downloads'),
     ], function (err) {
       server.route(require('../../routes/index'));
-
+      server.methods = _.extend({}, server.methods, require('./server-methods')(server));
       server.start(function () {
         return done(server);
       });

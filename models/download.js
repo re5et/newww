@@ -11,12 +11,8 @@ var Download = module.exports = function (opts) {
   return this;
 };
 
-Download.new = function(request) {
-  var bearer = request.auth.credentials && request.auth.credentials.name;
-  return new Download({
-    bearer: bearer,
-    cache: require("../lib/cache")
-  });
+Download.new = function() {
+  return new Download()
 };
 
 Download.prototype.getDaily = function(packageName) {
@@ -33,7 +29,6 @@ Download.prototype.getMonthly = function(packageName) {
 
 Download.prototype.getAll = function(packageName) {
   var _this = this;
-
   return Promise.all([
     _this.getDaily(packageName),
     _this.getWeekly(packageName),
@@ -54,6 +49,7 @@ Download.prototype.getSome = function(period, packageName) {
   if (packageName) {
     url += "/" + packageName;
   }
+  console.log("getSome: ", url)
 
   return new Promise(function(resolve, reject) {
     var opts = {
@@ -61,9 +57,6 @@ Download.prototype.getSome = function(period, packageName) {
       url: url,
       json: true,
       timeout: _this.timeout,
-      headers: {
-        bearer: _this.bearer
-      }
     };
 
     if (_this.cache) {
