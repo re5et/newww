@@ -14,9 +14,9 @@ var Collaborator = module.exports = function(opts) {
 };
 
 Collaborator.new = function(request) {
-  var bearer = request.auth.credentials && request.auth.credentials.name
-  return new Collaborator({bearer: bearer})
-}
+  var bearer = request.auth.credentials && request.auth.credentials.name;
+  return new Collaborator({bearer: bearer});
+};
 
 Collaborator.prototype.list = function(package, callback) {
   var _this = this;
@@ -28,7 +28,7 @@ Collaborator.prototype.list = function(package, callback) {
       url: url,
       json: true,
       headers: {bearer: _this.bearer}
-    }
+    };
 
     request(opts,
       function(err, resp, body) {
@@ -40,8 +40,8 @@ Collaborator.prototype.list = function(package, callback) {
         }
 
         Object.keys(body).forEach(function(username){
-          body[username] = decorate(body[username], package)
-        })
+          body[username] = decorate(body[username], package);
+        });
 
         return resolve(body);
       });
@@ -59,7 +59,7 @@ Collaborator.prototype.add = function(package, collaborator, callback) {
       json: true,
       headers: {bearer: _this.bearer},
       body: collaborator
-    }
+    };
 
     request(opts, function(err, resp, body) {
       if (err) { return reject(err); }
@@ -83,7 +83,7 @@ Collaborator.prototype.update = function(package, collaborator, callback) {
     json: true,
     headers: {bearer: _this.bearer},
     body: collaborator,
-  }
+  };
 
   return new Promise(function(resolve, reject) {
     request(opts, function(err, resp, body) {
@@ -108,7 +108,7 @@ Collaborator.prototype.del = function(package, collaboratorName, callback) {
       url: url,
       json: true,
       headers: {bearer: _this.bearer}
-    }
+    };
 
     request(opts, function(err, resp, body){
       if (err) { return reject(err); }
